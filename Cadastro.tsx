@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import {View,Text,TextInput,Image,StyleSheet,Alert,TouchableOpacity,SafeAreaView, StatusBar,}  from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
@@ -34,7 +34,7 @@ export default function Cadastro() {
         setStatus('Câmera cancelada');
       } else {
         setFoto(result.assets[0].uri);
-        setStatus('Foto capturada');
+        setStatus('Foto capturada!');
       }
     } catch (error) {
       setStatus('Erro ao abrir câmera');
@@ -50,80 +50,152 @@ export default function Cadastro() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Meu Perfil com Foto</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#0A0F1D" />
 
-      <TextInput
-        placeholder="Nome"
-        value={nome}
-        onChangeText={setNome}
-        style={styles.input}
-        autoCapitalize="words"
-      />
+      <View style={styles.card}>
+        <Text style={styles.title}>Novo Cadastro</Text>
+        <Text style={styles.subtitle}>Preencha seus dados para continuar</Text>
 
-      <TextInput
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        {/* Preview / Botão de Foto com Avatar Circular */}
+        <TouchableOpacity style={styles.avatarContainer} onPress={tirarFoto} activeOpacity={0.8}>
+          {foto ? (
+            <Image source={{ uri: foto }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <Text style={styles.avatarIcon}>📷</Text>
+              <Text style={styles.avatarText}>Adicionar Foto</Text>
+            </View>
+          )}
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={tirarFoto}>
-        <Text style={styles.buttonText}>Tirar Foto</Text>
-      </TouchableOpacity>
+        {status ? <Text style={styles.statusText}>{status}</Text> : null}
 
-      <Text style={{ marginVertical: 8 }}>{status}</Text>
+        {/* Inputs */}
+        <View style={styles.inputGroup}>
+          <TextInput
+            placeholder="Nome completo"
+            placeholderTextColor="#64748B"
+            value={nome}
+            onChangeText={setNome}
+            style={styles.input}
+            autoCapitalize="words"
+          />
 
-      {foto ? (
-        <Image source={{ uri: foto }} style={styles.preview} />
-      ) : (
-        <Text>Nenhuma foto capturada</Text>
-      )}
+          <TextInput
+            placeholder="E-mail"
+            placeholderTextColor="#64748B"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
 
-      <TouchableOpacity style={[styles.button, { marginTop: 12 }]} onPress={verPerfil}>
-        <Text style={styles.buttonText}>Ver Perfil</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Botão de Ação */}
+        <TouchableOpacity style={styles.primaryButton} onPress={verPerfil} activeOpacity={0.8}>
+          <Text style={styles.primaryButtonText}>Acessar Perfil</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1, 
-   alignItems: 'center',
-   justifyContent: 'center', 
-   padding: 16 
+    flex: 1,
+    backgroundColor: '#0A0F1D', // Azul Marinho Profundo (Background)
+    justifyContent: 'center',
+    padding: 20,
   },
-
+  card: {
+    backgroundColor: '#161F33', // Card com azul um pouco mais claro
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    shadowColor: '#38BDF8', // Glow suave em azul ciano
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
   title: {
-  fontSize: 22,
-  fontWeight: 'bold',
-   marginBottom: 12
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#F8FAFC',
+    marginBottom: 4,
   },
-  input: { 
-  width: '100%',
-  padding: 10, 
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 8,
-  marginBottom: 8 
-},
-  button: {
-  backgroundColor: '#066650ff',
-  padding: 12, 
-  borderRadius: 8, 
-  width: '60%', 
-  alignItems: 'center' 
-},
-  buttonText: {
-   color: '#fff', 
-   fontSize: 16 },
-  preview: {
-   width: 300, 
-   height: 300, 
-   marginTop: 12, 
-   borderRadius: 8 
+  subtitle: {
+    fontSize: 14,
+    color: '#94A3B8',
+    marginBottom: 20,
+  },
+  avatarContainer: {
+    marginBottom: 12,
+  },
+  avatar: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    borderWidth: 3,
+    borderColor: '#38BDF8', // Borda Ciano Tecnológica
+  },
+  avatarPlaceholder: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: '#0F172A',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#38BDF8',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  avatarText: {
+    color: '#38BDF8',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  statusText: {
+    color: '#38BDF8',
+    fontSize: 12,
+    marginBottom: 16,
+  },
+  inputGroup: {
+    width: '100%',
+    marginVertical: 12,
+  },
+  input: {
+    width: '100%',
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: '#334155',
+    borderRadius: 12,
+    color: '#F8FAFC',
+    fontSize: 15,
+    marginBottom: 12,
+  },
+  primaryButton: {
+    width: '100%',
+    backgroundColor: '#2563EB', // Azul Neon/Tech
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });
